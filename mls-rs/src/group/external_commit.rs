@@ -106,6 +106,17 @@ impl<C: ClientConfig> ExternalCommitBuilder<C> {
         }
     }
 
+    #[cfg(all(feature = "custom_proposal", feature = "self_remove_proposal"))]
+    #[must_use]
+    /// Add a by-value SelfRemove proposal, removing the committer's existing leaf with the same
+    /// identity when rejoining a group it is still a member of.
+    pub fn with_self_remove(mut self) -> Self {
+        self.custom_proposals.push(crate::group::proposal::Proposal::SelfRemove(
+            crate::group::proposal::SelfRemoveProposal {},
+        ));
+        self
+    }
+
     #[must_use]
     /// Add plaintext authenticated data to the resulting commit message.
     pub fn with_authenticated_data(self, data: Vec<u8>) -> Self {

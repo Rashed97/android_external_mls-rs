@@ -169,6 +169,7 @@ where
                 self.identity_provider,
                 self.cipher_suite_provider,
                 strategy.is_ignore(),
+                self.external_leaf,
             )
             .await?;
 
@@ -577,6 +578,7 @@ pub(crate) fn proposer_can_propose(
         (Sender::NewMemberCommit, ProposalSource::ByValue | ProposalSource::Local) => matches!(
             proposal_type,
             ProposalType::REMOVE | ProposalType::PSK | ProposalType::EXTERNAL_INIT
+                | ProposalType::SELF_REMOVE
         ),
         (Sender::NewMemberCommit, ProposalSource::ByReference(_)) => false,
         (Sender::NewMemberProposal, ProposalSource::ByValue | ProposalSource::Local) => false,

@@ -463,6 +463,7 @@ impl TreeKemPublic {
         id_provider: &I,
         cipher_suite_provider: &CP,
         filter: bool,
+        external_leaf: Option<&crate::tree_kem::leaf_node::LeafNode>,
     ) -> Result<Vec<LeafIndex>, MlsError>
     where
         I: IdentityProvider,
@@ -476,7 +477,18 @@ impl TreeKemPublic {
         for i in (0..proposal_bundle.self_removes.len()).rev() {
             let index = match proposal_bundle.self_removes[i].sender {
                 crate::group::Sender::Member(idx) => LeafIndex::try_from(idx)?,
-                _ => continue,
+                // A by-value SelfRemove in an external commit removes the committer's existing
+                // leaf, found by the identity of its new leaf.
+                _ => match external_leaf {
+                    Some(ext) => {
+                        let id = identity(&ext.signing_identity, id_provider, extensions).await?;
+                        match self.index.get_leaf_index_with_identity(&id) {
+                            Some(idx) => idx,
+                            None => continue,
+                        }
+                    }
+                    None => continue,
+                },
             };
             self_removed.push(index);
             self.apply_remove::<SelfRemoveProposal, I>(
@@ -842,6 +854,7 @@ impl TreeKemPublic {
             identity_provider,
             cipher_suite_provider,
             true,
+            None,
         )
         .await?;
 
@@ -879,6 +892,7 @@ impl TreeKemPublic {
             identity_provider,
             cipher_suite_provider,
             true,
+            None,
         )
         .await?;
 
@@ -1653,6 +1667,7 @@ mod tests {
             &BasicIdentityProvider,
             &cipher_suite_provider,
             true,
+            None,
         )
         .await
         .unwrap();

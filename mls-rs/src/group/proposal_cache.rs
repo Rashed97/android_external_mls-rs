@@ -888,6 +888,7 @@ mod tests {
                 &BasicIdentityProvider,
                 &cipher_suite_provider,
                 true,
+                None,
             )
             .await
             .unwrap();
