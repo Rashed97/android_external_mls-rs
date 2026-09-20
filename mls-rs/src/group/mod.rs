@@ -1354,6 +1354,38 @@ where
         Proposal::GroupContextExtensions(extensions)
     }
 
+    /// Create a signed PublicMessage carrying a custom proposal, without caching the proposal or
+    /// changing group state. RCC.16 §7.6.2 uses this form as a message signature, placing the
+    /// derived content in `authenticated_data`; the proposal is never committed, which is why
+    /// `propose_custom` (which caches it) cannot be used.
+    #[cfg(feature = "custom_proposal")]
+    #[cfg_attr(not(mls_build_async), maybe_async::must_be_sync)]
+    pub async fn rcs_signature_message(
+        &self,
+        proposal: CustomProposal,
+        authenticated_data: Vec<u8>,
+    ) -> Result<MlsMessage, MlsError> {
+        let sender = Sender::Member(*self.private_tree.self_index);
+
+        let auth_content = AuthenticatedContent::new_signed(
+            &self.cipher_suite_provider,
+            self.context(),
+            sender,
+            Content::Proposal(alloc::boxed::Box::new(Proposal::Custom(proposal))),
+            &self.signer,
+            WireFormat::PublicMessage,
+            authenticated_data,
+        )
+        .await?;
+
+        // create_plaintext computes the membership_tag a member-sent PublicMessage carries
+        // (RFC 9420 §6.1).
+        Ok(MlsMessage::new(
+            self.protocol_version(),
+            MlsMessagePayload::Plain(self.create_plaintext(auth_content).await?),
+        ))
+    }
+
     /// Create a custom proposal message.
     ///
     /// `authenticated_data` will be sent unencrypted along with the contents
