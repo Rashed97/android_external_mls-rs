@@ -109,6 +109,10 @@ pub use self::message_processor::CachedProposal;
 
 #[cfg(feature = "private_message")]
 mod ciphertext_processor;
+/// Decrypted `sender_data` of the last inbound PrivateMessage; see `ciphertext_processor`.
+pub use ciphertext_processor::{
+    LAST_RECV_EPOCH, LAST_RECV_GENERATION, LAST_RECV_SENDER, LAST_RECV_VALID,
+};
 
 mod commit;
 pub mod component_operation;

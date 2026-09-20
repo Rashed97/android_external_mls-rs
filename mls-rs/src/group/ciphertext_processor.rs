@@ -26,6 +26,18 @@ use zeroize::Zeroizing;
 
 mod message_key;
 mod reuse_guard;
+
+/// Decrypted `sender_data` of the last inbound PrivateMessage, for diagnostics. The generation
+/// is encrypted on the wire and can only be observed here. These are process-global, not per
+/// group. `LAST_RECV_VALID` is cleared before and set after the other three are stored.
+pub static LAST_RECV_GENERATION: core::sync::atomic::AtomicU32 =
+    core::sync::atomic::AtomicU32::new(u32::MAX);
+pub static LAST_RECV_SENDER: core::sync::atomic::AtomicU32 =
+    core::sync::atomic::AtomicU32::new(u32::MAX);
+pub static LAST_RECV_EPOCH: core::sync::atomic::AtomicU64 =
+    core::sync::atomic::AtomicU64::new(u64::MAX);
+pub static LAST_RECV_VALID: core::sync::atomic::AtomicBool =
+    core::sync::atomic::AtomicBool::new(false);
 mod sender_data_key;
 
 #[cfg(feature = "private_message")]
@@ -202,6 +214,16 @@ where
 
         if self.group_state.self_index() == sender_data.sender {
             return Err(MlsError::CantProcessMessageFromSelf);
+        }
+
+        // Publish the decrypted sender_data; see LAST_RECV_GENERATION.
+        {
+            use core::sync::atomic::Ordering;
+            LAST_RECV_VALID.store(false, Ordering::SeqCst);
+            LAST_RECV_GENERATION.store(sender_data.generation, Ordering::SeqCst);
+            LAST_RECV_SENDER.store(*sender_data.sender, Ordering::SeqCst);
+            LAST_RECV_EPOCH.store(ciphertext.epoch, Ordering::SeqCst);
+            LAST_RECV_VALID.store(true, Ordering::SeqCst);
         }
 
         // Grab a decryption key from the message epoch's key schedule
