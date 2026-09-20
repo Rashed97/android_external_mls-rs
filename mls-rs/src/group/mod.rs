@@ -1966,6 +1966,30 @@ where
         ))
     }
 
+    /// Verify a GroupInfo message's signature against this group's own tree, returning the
+    /// signer's leaf index and signature key. A diagnostic for GroupInfo produced alongside a
+    /// commit: it succeeds only if the signer's key matches the leaf at that index.
+    #[cfg_attr(not(mls_build_async), maybe_async::must_be_sync)]
+    pub async fn rcs_debug_validate_group_info(
+        &self,
+        gi_bytes: &[u8],
+    ) -> Result<(u32, Vec<u8>), MlsError> {
+        let msg = MlsMessage::from_bytes(gi_bytes)?;
+        let gi = msg.into_group_info().ok_or(MlsError::UnexpectedMessageType)?;
+        let signer = gi.signer;
+        let leaf = self.state.public_tree.get_leaf_node(signer)?;
+        let signer_key = leaf.signing_identity.signature_key.as_bytes().to_vec();
+        crate::group::util::validate_group_info_joiner(
+            self.protocol_version(),
+            &gi,
+            &leaf.signing_identity.clone(),
+            &self.config.identity_provider(),
+            &self.cipher_suite_provider,
+        )
+        .await?;
+        Ok((*signer, signer_key))
+    }
+
     /// Get the current group context summarizing various information about the group.
     #[inline(always)]
     pub fn context(&self) -> &GroupContext {
