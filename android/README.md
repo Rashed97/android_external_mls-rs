@@ -16,7 +16,8 @@ which is added alongside the upstream tree:
 * `android/vendor/<crate>-<version>/`: crates.io releases, unmodified (each keeps its
   `.cargo-checksum.json`), with their own `cargo_embargo.json` and `Android.bp`.
 * `android/patches/`: changes applied to the generated `Android.bp` files.
-* `android/regen_android_bp.py`: regenerates every `Android.bp`.
+* `android/cargo/`: symlinks through which Cargo resolves the crates Soong builds (see below).
+* `android/regen_android_bp.py`: regenerates every `Android.bp` and `android/cargo/`.
 * `Android.bp`: the licence module shared by the mls-rs crates, which ship no licence text.
 
 ## Soong modules
@@ -132,6 +133,35 @@ cover what metadata mode cannot express:
 * `aes`, `chacha20`, `poly1305`, `polyval`, `sha2`: add `libcpufeatures`, a dependency Cargo
   enables only for particular target architectures.
 * `p256`, `p384`: rename the `ecdsa` alias to `ecdsa_core`, which is how the crate names it.
+
+## Building with Cargo
+
+`mls-rs` and `mls-rs-core` name `../mls-rs-codec` by path, and `[patch]` cannot redirect a path
+dependency, so a Cargo build that depends on `mls-rs/` directly compiles the repository's
+`mls-rs-codec`, not the release Soong builds. `android/cargo/` holds one symlink per crate
+directory of the upstream workspace, pointing at the repository directory, or at the vendored
+release for `mls-rs-codec`, `mls-rs-codec-derive` and `mls-rs-crypto-rustcrypto`. Cargo resolves
+relative paths lexically, so `../mls-rs-codec` from `android/cargo/mls-rs` reaches the vendored
+copy. Soong does not follow symlinked directories, so it never reads an `Android.bp` through them.
+
+A host build uses the Soong crate set by depending on the crates through `android/cargo/`, and by
+patching crates.io to the same paths for the vendored crates' own dependencies on them:
+
+    [dependencies]
+    mls-rs = { path = "<external/mls-rs>/android/cargo/mls-rs", features = [...] }
+    mls-rs-crypto-rustcrypto = { path = "<external/mls-rs>/android/cargo/mls-rs-crypto-rustcrypto" }
+
+    [patch.crates-io]
+    mls-rs-codec = { path = "<external/mls-rs>/android/cargo/mls-rs-codec" }
+    mls-rs-codec-derive = { path = "<external/mls-rs>/android/cargo/mls-rs-codec-derive" }
+    mls-rs-core = { path = "<external/mls-rs>/android/cargo/mls-rs-core" }
+    mls-rs-crypto-hpke = { path = "<external/mls-rs>/android/cargo/mls-rs-crypto-hpke" }
+    mls-rs-crypto-traits = { path = "<external/mls-rs>/android/cargo/mls-rs-crypto-traits" }
+    mls-rs-identity-x509 = { path = "<external/mls-rs>/android/cargo/mls-rs-identity-x509" }
+
+`cargo tree -d` then lists no mls-rs crate twice. Soong builds `mls-rs-codec-derive` from
+android-crates-io, whose 0.2.0 has the same sources as the vendored copy Cargo uses.
+`regen_android_bp.py` recreates `android/cargo/`, and `--check` fails if it is out of date.
 
 ## Licensing
 

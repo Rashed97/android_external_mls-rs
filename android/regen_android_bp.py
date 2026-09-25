@@ -20,13 +20,15 @@ crate in metadata mode ("run_cargo": false), exactly as for a standalone crate, 
   mls-rs-crypto-rustcrypto the Android build uses the published releases in android/vendor/
   instead of the sources in this repository.
 
-So the script builds a temporary tree in which each crate directory is a symlink: the mls-rs
-crates point into this repository, except that a crate vendored under android/vendor/ replaces
-the repository directory of the same name. A root package there depends on every configured
+So the crates are resolved through android/cargo/, a tree in which each crate directory is a
+symlink: the mls-rs crates point into this repository, except that a crate vendored under
+android/vendor/ replaces the repository directory of the same name. The script (re)creates it,
+and --check fails if it is out of date. A temporary root package depends on every configured
 crate with the features its cargo_embargo.json lists, and patches crates.io to the same paths,
 so the resolved graph is the one Soong builds. Cargo resolves relative paths lexically, so
-"../mls-rs-codec" from mls-rs reaches the vendored copy, and cargo_embargo writes each
-Android.bp through the symlink into the real directory.
+"../mls-rs-codec" from android/cargo/mls-rs reaches the vendored copy, and cargo_embargo writes
+each Android.bp through the symlink into the real directory. The tree is committed so that other
+Cargo builds, such as a host build of a crate that uses mls-rs, can depend on the same crates.
 
 Crates the platform provides (see android/README.md) come from crates.io, or from --registry-dir,
 a `cargo vendor` directory, when working offline. They only need to resolve: nothing is
@@ -50,6 +52,7 @@ import tomllib
 ANDROID = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(ANDROID)
 VENDOR = os.path.join(ANDROID, "vendor")
+CARGO_TREE = os.path.join(ANDROID, "cargo")
 
 
 def package_of(crate_dir):
@@ -71,30 +74,54 @@ def toml_str(s):
     return json.dumps(s)
 
 
-def build_farm(farm):
-    """Lay out the symlink tree; return {real crate dir: path cargo should use for it}."""
-    canonical = {}
+def cargo_tree_links():
+    """{name: symlink target} for android/cargo, targets relative to android/cargo."""
+    links = {}
     # Every directory of the upstream workspace, so that any relative path resolves.
     for d in sorted(os.listdir(REPO)):
         if os.path.isfile(os.path.join(REPO, d, "Cargo.toml")) and d != "android":
-            os.symlink(os.path.join(REPO, d), os.path.join(farm, d))
-            canonical[os.path.join(REPO, d)] = os.path.join(farm, d)
+            links[d] = os.path.join("..", "..", d)
     # A vendored release replaces the repository crate of the same name.
     for d in sorted(os.listdir(VENDOR)):
-        real = os.path.join(VENDOR, d)
-        name, _ = package_of(real)
-        link = os.path.join(farm, name)
-        if os.path.islink(link):
-            del canonical[os.readlink(link)]
-            os.unlink(link)
-            os.symlink(real, link)
-            canonical[real] = link
-        else:
-            canonical[real] = real
+        name, _ = package_of(os.path.join(VENDOR, d))
+        if name in links:
+            links[name] = os.path.join("..", "vendor", d)
+    return links
+
+
+def sync_cargo_tree(check):
+    """Make android/cargo match cargo_tree_links(); with check, only report whether it does."""
+    want = cargo_tree_links()
+    have = {}
+    if os.path.isdir(CARGO_TREE):
+        for d in os.listdir(CARGO_TREE):
+            p = os.path.join(CARGO_TREE, d)
+            have[d] = os.readlink(p) if os.path.islink(p) else None
+    if have == want:
+        return None
+    if check:
+        return "android/cargo is out of date"
+    if None in have.values():
+        sys.exit("android/cargo holds something other than symlinks")
+    os.makedirs(CARGO_TREE, exist_ok=True)
+    for d in have:
+        os.unlink(os.path.join(CARGO_TREE, d))
+    for d, target in want.items():
+        os.symlink(target, os.path.join(CARGO_TREE, d))
+    return None
+
+
+def canonical_paths():
+    """{real crate dir: path cargo should use for it}."""
+    canonical = {}
+    for d, target in cargo_tree_links().items():
+        canonical[os.path.normpath(os.path.join(CARGO_TREE, target))] = os.path.join(CARGO_TREE, d)
+    for d in sorted(os.listdir(VENDOR)):
+        canonical.setdefault(os.path.join(VENDOR, d), os.path.join(VENDOR, d))
     return canonical
 
 
-def write_root(farm, canonical, crates):
+def write_root(tmp, canonical, crates):
     deps, patches, seen = [], [], {}
     for crate_dir in crates + [os.path.join(VENDOR, d) for d in sorted(os.listdir(VENDOR))]:
         name, version = package_of(crate_dir)
@@ -113,7 +140,7 @@ def write_root(farm, canonical, crates):
         if features is not None:
             spec += f", default-features = false, features = {json.dumps(features)}"
         deps.append(f"{toml_str(key)} = {{ {spec} }}")
-    root = os.path.join(farm, "android-root")
+    root = os.path.join(tmp, "android-root")
     os.mkdir(root)
     with open(os.path.join(root, "lib.rs"), "w"):
         pass
@@ -213,13 +240,16 @@ def main():
     env = dict(os.environ)
     env["PATH"] = os.path.dirname(bpfmt) + os.pathsep + env["PATH"]
 
+    tree_problem = sync_cargo_tree(args.check)
+    if tree_problem:
+        sys.exit(f"FAILED: {tree_problem}: run android/regen_android_bp.py")
     crates = configured_crates()
     before = {c: open(os.path.join(c, "Android.bp")).read()
               if os.path.exists(os.path.join(c, "Android.bp")) else None for c in crates}
 
-    with tempfile.TemporaryDirectory(prefix="mls-rs-embargo-") as farm:
-        canonical = build_farm(farm)
-        root = write_root(farm, canonical, crates)
+    with tempfile.TemporaryDirectory(prefix="mls-rs-embargo-") as tmp:
+        canonical = canonical_paths()
+        root = write_root(tmp, canonical, crates)
 
         cmd = [cargo, "metadata", "--format-version", "1"]
         if args.offline:
@@ -237,7 +267,7 @@ def main():
             if pkg is None:
                 failed.append(f"{os.path.relpath(crate_dir, REPO)}: not in the resolved graph")
                 continue
-            work = os.path.join(farm, "intermediates", pkg["name"] + "-" + pkg["version"])
+            work = os.path.join(tmp, "intermediates", pkg["name"] + "-" + pkg["version"])
             os.makedirs(work)
             one = dict(meta, workspace_members=[pkg["id"]])
             with open(os.path.join(work, "cargo.metadata"), "w") as f:
