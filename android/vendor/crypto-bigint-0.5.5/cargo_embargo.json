@@ -1,0 +1,21 @@
+{
+  "run_cargo": false,
+  "features": [
+    "generic-array",
+    "rand_core",
+    "zeroize"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_crypto-bigint_license": "external_mls_rs_crypto-bigint_license",
+    "librand_core": "librand_core_mls_rs",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "crypto-bigint": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

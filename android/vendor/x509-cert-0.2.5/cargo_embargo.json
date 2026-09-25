@@ -1,0 +1,23 @@
+{
+  "run_cargo": false,
+  "features": [
+    "default",
+    "pem",
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_x509-cert_license": "external_mls_rs_x509-cert_license",
+    "libconst_oid": "libconst_oid_mls_rs",
+    "libder": "libder_mls_rs",
+    "libspki": "libspki_mls_rs",
+    "libx509_cert": "libx509_cert_mls_rs"
+  },
+  "package": {
+    "x509-cert": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

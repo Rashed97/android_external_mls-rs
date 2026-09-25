@@ -1,0 +1,20 @@
+{
+  "run_cargo": false,
+  "features": [
+    "getrandom",
+    "rand_core",
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_crypto-common_license": "external_mls_rs_crypto-common_license",
+    "librand_core": "librand_core_mls_rs"
+  },
+  "package": {
+    "crypto-common": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

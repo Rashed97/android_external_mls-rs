@@ -1,0 +1,29 @@
+{
+  "run_cargo": false,
+  "features": [
+    "default",
+    "getrandom",
+    "mls-rs-identity-x509",
+    "spki",
+    "std",
+    "x509",
+    "x509-cert"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_mls-rs-crypto-rustcrypto_license": "external_mls_rs_license",
+    "libgetrandom": "libgetrandom_mls_rs",
+    "libmls_rs_core": "libmls_rs_core_mls_rs",
+    "libmls_rs_crypto_traits": "libmls_rs_crypto_traits_mls_rs",
+    "librand_core": "librand_core_mls_rs",
+    "libsec1": "libsec1_mls_rs",
+    "libspki": "libspki_mls_rs",
+    "libx509_cert": "libx509_cert_mls_rs",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "mls-rs-crypto-rustcrypto": {
+      "patch": "../../patches/use-shared-license.patch",
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

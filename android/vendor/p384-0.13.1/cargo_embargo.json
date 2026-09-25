@@ -1,0 +1,27 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "arithmetic",
+    "digest",
+    "ecdh",
+    "ecdsa",
+    "ecdsa-core",
+    "pem",
+    "pkcs8",
+    "sha2",
+    "sha384"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_p384_license": "external_mls_rs_p384_license"
+  },
+  "package": {
+    "p384": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp",
+      "patch": "../../patches/p384-0.13.1.patch"
+    }
+  }
+}

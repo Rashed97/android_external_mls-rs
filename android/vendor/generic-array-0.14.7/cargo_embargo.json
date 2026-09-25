@@ -1,0 +1,19 @@
+{
+  "run_cargo": false,
+  "features": [
+    "more_lengths",
+    "zeroize"
+  ],
+  "extra_cfg": [
+    "relaxed_coherence"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_generic-array_license": "external_mls_rs_generic-array_license",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "generic-array": {
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

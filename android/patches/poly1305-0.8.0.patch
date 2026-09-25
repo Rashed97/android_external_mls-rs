@@ -1,0 +1,6 @@
+--- a/Android.bp
++++ b/Android.bp
+@@ -24,2 +24,3 @@
+     rustlibs: [
++        "libcpufeatures",
+         "libopaque_debug",

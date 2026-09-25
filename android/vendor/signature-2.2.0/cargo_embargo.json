@@ -1,0 +1,21 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "digest",
+    "rand_core",
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_signature_license": "external_mls_rs_signature_license",
+    "librand_core": "librand_core_mls_rs"
+  },
+  "package": {
+    "signature": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

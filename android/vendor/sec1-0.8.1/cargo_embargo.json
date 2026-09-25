@@ -1,0 +1,19 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_sec1_license": "external_mls_rs_sec1_license",
+    "libsec1": "libsec1_mls_rs"
+  },
+  "package": {
+    "sec1": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "run_cargo": false,
+  "features": [
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_sha2_license": "external_mls_rs_sha2_license"
+  },
+  "package": {
+    "sha2": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp",
+      "patch": "../../patches/sha2-0.10.9.patch"
+    }
+  }
+}

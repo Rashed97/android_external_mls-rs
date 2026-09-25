@@ -1,0 +1,20 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "getrandom",
+    "rand_core"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_chacha20poly1305_license": "external_mls_rs_chacha20poly1305_license",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "chacha20poly1305": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

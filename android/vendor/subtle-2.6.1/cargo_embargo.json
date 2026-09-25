@@ -1,0 +1,15 @@
+{
+  "run_cargo": false,
+  "features": [
+    "i128",
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_subtle_license": "external_mls_rs_subtle_license"
+  },
+  "package": {
+    "subtle": {
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

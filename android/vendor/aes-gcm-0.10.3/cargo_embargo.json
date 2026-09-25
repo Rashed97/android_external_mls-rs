@@ -1,0 +1,23 @@
+{
+  "run_cargo": false,
+  "features": [
+    "aes",
+    "alloc",
+    "default",
+    "getrandom",
+    "rand_core",
+    "zeroize"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_aes-gcm_license": "external_mls_rs_aes-gcm_license",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "aes-gcm": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

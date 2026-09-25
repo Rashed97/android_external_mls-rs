@@ -1,0 +1,31 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "arithmetic",
+    "digest",
+    "ecdh",
+    "ff",
+    "group",
+    "hazmat",
+    "pem",
+    "pkcs8",
+    "sec1",
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_elliptic-curve_license": "external_mls_rs_elliptic-curve_license",
+    "libpkcs8": "libpkcs8_mls_rs",
+    "librand_core": "librand_core_mls_rs",
+    "libsec1": "libsec1_mls_rs_0_7",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "elliptic-curve": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

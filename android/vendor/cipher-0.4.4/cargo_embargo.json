@@ -1,0 +1,18 @@
+{
+  "run_cargo": false,
+  "features": [
+    "zeroize"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_cipher_license": "external_mls_rs_cipher_license",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "cipher": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

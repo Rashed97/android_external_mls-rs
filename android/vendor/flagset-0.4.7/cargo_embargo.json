@@ -1,0 +1,13 @@
+{
+  "run_cargo": false,
+  "features": [],
+  "module_name_overrides": {
+    "external_rust_crates_flagset_license": "external_mls_rs_flagset_license",
+    "libflagset": "libflagset_mls_rs"
+  },
+  "package": {
+    "flagset": {
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

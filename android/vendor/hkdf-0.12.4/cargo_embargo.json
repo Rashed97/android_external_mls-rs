@@ -1,0 +1,17 @@
+{
+  "run_cargo": false,
+  "features": [
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_hkdf_license": "external_mls_rs_hkdf_license"
+  },
+  "package": {
+    "hkdf": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

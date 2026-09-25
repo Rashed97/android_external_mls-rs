@@ -1,0 +1,15 @@
+{
+  "run_cargo": false,
+  "features": [],
+  "module_name_overrides": {
+    "external_rust_crates_opaque-debug_license": "external_mls_rs_opaque-debug_license"
+  },
+  "package": {
+    "opaque-debug": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

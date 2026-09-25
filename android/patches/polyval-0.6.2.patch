@@ -1,0 +1,6 @@
+--- a/Android.bp
++++ b/Android.bp
+@@ -25,2 +25,3 @@
+         "libcfg_if",
++        "libcpufeatures",
+         "libopaque_debug",

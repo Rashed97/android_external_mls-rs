@@ -1,0 +1,17 @@
+{
+  "run_cargo": false,
+  "features": [
+    "preallocate",
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_mls-rs-codec_license": "external_mls_rs_license",
+    "libmls_rs_codec": "libmls_rs_codec_mls_rs"
+  },
+  "package": {
+    "mls-rs-codec": {
+      "patch": "../../patches/use-shared-license.patch",
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

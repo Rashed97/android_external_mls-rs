@@ -1,0 +1,21 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "getrandom",
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_rand_core_license": "external_mls_rs_rand_core_license",
+    "libgetrandom": "libgetrandom_mls_rs",
+    "librand_core": "librand_core_mls_rs"
+  },
+  "package": {
+    "rand_core": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

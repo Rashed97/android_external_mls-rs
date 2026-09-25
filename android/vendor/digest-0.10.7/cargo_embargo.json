@@ -1,0 +1,26 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "block-buffer",
+    "const-oid",
+    "core-api",
+    "default",
+    "mac",
+    "oid",
+    "std",
+    "subtle"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_digest_license": "external_mls_rs_digest_license",
+    "libconst_oid": "libconst_oid_mls_rs"
+  },
+  "package": {
+    "digest": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "digest",
+    "zeroize"
+  ],
+  "extra_cfg": [
+    "curve25519_dalek_backend=\"serial\"",
+    "curve25519_dalek_bits=\"64\""
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_curve25519-dalek_license": "external_mls_rs_curve25519-dalek_license",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "curve25519-dalek": {
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

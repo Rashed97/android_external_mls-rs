@@ -1,0 +1,15 @@
+{
+  "run_cargo": false,
+  "features": [],
+  "module_name_overrides": {
+    "external_rust_crates_inout_license": "external_mls_rs_inout_license"
+  },
+  "package": {
+    "inout": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "default",
+    "der",
+    "pem",
+    "pkcs8",
+    "point",
+    "std",
+    "subtle",
+    "zeroize"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_sec1_license": "external_mls_rs_sec1_0_7_license",
+    "libder": "libder_mls_rs",
+    "libpkcs8": "libpkcs8_mls_rs",
+    "libsec1": "libsec1_mls_rs_0_7",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "sec1": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

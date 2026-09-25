@@ -1,0 +1,21 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "std",
+    "zeroize_derive"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_zeroize_license": "external_mls_rs_zeroize_license",
+    "libzeroize": "libzeroize_mls_rs",
+    "libzeroize_derive": "libzeroize_derive_mls_rs"
+  },
+  "package": {
+    "zeroize": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

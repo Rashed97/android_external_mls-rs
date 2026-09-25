@@ -1,0 +1,16 @@
+{
+  "run_cargo": false,
+  "features": [],
+  "module_name_overrides": {
+    "external_rust_crates_polyval_license": "external_mls_rs_polyval_license"
+  },
+  "package": {
+    "polyval": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp",
+      "patch": "../../patches/polyval-0.6.2.patch"
+    }
+  }
+}

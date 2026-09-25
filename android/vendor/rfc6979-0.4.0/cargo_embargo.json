@@ -1,0 +1,15 @@
+{
+  "run_cargo": false,
+  "features": [],
+  "module_name_overrides": {
+    "external_rust_crates_rfc6979_license": "external_mls_rs_rfc6979_license"
+  },
+  "package": {
+    "rfc6979": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

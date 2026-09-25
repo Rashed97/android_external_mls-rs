@@ -1,0 +1,16 @@
+{
+  "run_cargo": false,
+  "features": [],
+  "module_name_overrides": {
+    "external_rust_crates_aes_license": "external_mls_rs_aes_license"
+  },
+  "package": {
+    "aes": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp",
+      "patch": "../../patches/aes-0.8.4.patch"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "run_cargo": false,
+  "features": [],
+  "module_name_overrides": {
+    "external_rust_crates_poly1305_license": "external_mls_rs_poly1305_license"
+  },
+  "package": {
+    "poly1305": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp",
+      "patch": "../../patches/poly1305-0.8.0.patch"
+    }
+  }
+}

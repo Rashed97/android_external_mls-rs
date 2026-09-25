@@ -1,0 +1,7 @@
+--- a/Android.bp
++++ b/Android.bp
+@@ -42,3 +42,3 @@
+     ],
+-    aliases: ["ecdsa:ecdsa-core"],
++    aliases: ["ecdsa:ecdsa_core"],
+     apex_available: [

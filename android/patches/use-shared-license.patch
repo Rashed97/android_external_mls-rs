@@ -1,0 +1,12 @@
+--- a/Android.bp
++++ b/Android.bp
+@@ -8,9 +8,2 @@
+ 
+-license {
+-    name: "external_mls_rs_license",
+-    visibility: [":__subpackages__"],
+-    license_kinds: ["SPDX-license-identifier-Apache-2.0"],
+-    license_text: ["LICENSE"],
+-}
+-
+ rust_library {

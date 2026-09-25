@@ -1,0 +1,6 @@
+--- a/Android.bp
++++ b/Android.bp
+@@ -26,2 +26,3 @@
+         "libcipher",
++        "libcpufeatures",
+     ],

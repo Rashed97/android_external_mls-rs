@@ -1,0 +1,21 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "pem",
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_spki_license": "external_mls_rs_spki_license",
+    "libder": "libder_mls_rs",
+    "libspki": "libspki_mls_rs"
+  },
+  "package": {
+    "spki": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

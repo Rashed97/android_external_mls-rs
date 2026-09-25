@@ -1,0 +1,18 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "rand_core",
+    "zeroize"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_ed25519-dalek_license": "external_mls_rs_ed25519-dalek_license",
+    "librand_core": "librand_core_mls_rs",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "ed25519-dalek": {
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

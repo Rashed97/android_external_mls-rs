@@ -1,0 +1,35 @@
+{
+  "run_cargo": false,
+  "features": [
+    "by_ref_proposal",
+    "custom_proposal",
+    "export_key_generation",
+    "fast_serialize",
+    "gsma_rcs_e2ee_feature",
+    "last_resort_key_package_ext",
+    "out_of_order",
+    "prior_epoch",
+    "prior_epoch_membership_key",
+    "private_message",
+    "psk",
+    "rfc_compliant",
+    "secret_tree_access",
+    "self_remove_proposal",
+    "std",
+    "tree_index",
+    "x509"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_mls-rs_license": "external_mls_rs_license",
+    "libmls_rs": "libmls_rs_fork",
+    "libmls_rs_codec": "libmls_rs_codec_mls_rs",
+    "libmls_rs_core": "libmls_rs_core_mls_rs",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "mls-rs": {
+      "patch": "../android/patches/mls-rs.patch",
+      "add_module_block": "../android/module_block.bp"
+    }
+  }
+}

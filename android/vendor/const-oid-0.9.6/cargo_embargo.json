@@ -1,0 +1,19 @@
+{
+  "run_cargo": false,
+  "features": [
+    "db",
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_const-oid_license": "external_mls_rs_const-oid_license",
+    "libconst_oid": "libconst_oid_mls_rs"
+  },
+  "package": {
+    "const-oid": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

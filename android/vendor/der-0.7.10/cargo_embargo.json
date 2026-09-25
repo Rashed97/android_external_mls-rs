@@ -1,0 +1,27 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc",
+    "derive",
+    "flagset",
+    "oid",
+    "pem",
+    "std",
+    "zeroize"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_der_license": "external_mls_rs_der_license",
+    "libconst_oid": "libconst_oid_mls_rs",
+    "libder": "libder_mls_rs",
+    "libflagset": "libflagset_mls_rs",
+    "libzeroize": "libzeroize_mls_rs"
+  },
+  "package": {
+    "der": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

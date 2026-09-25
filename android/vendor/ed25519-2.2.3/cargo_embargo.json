@@ -1,0 +1,17 @@
+{
+  "run_cargo": false,
+  "features": [
+    "alloc"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_ed25519_license": "external_mls_rs_ed25519_license"
+  },
+  "package": {
+    "ed25519": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

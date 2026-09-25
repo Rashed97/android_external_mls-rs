@@ -1,0 +1,15 @@
+{
+  "run_cargo": false,
+  "features": [],
+  "module_name_overrides": {
+    "external_rust_crates_ctr_license": "external_mls_rs_ctr_license"
+  },
+  "package": {
+    "ctr": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp"
+    }
+  }
+}

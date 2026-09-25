@@ -1,0 +1,17 @@
+{
+  "run_cargo": false,
+  "features": [
+    "default",
+    "std"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_mls-rs-identity-x509_license": "external_mls_rs_license",
+    "libmls_rs_core": "libmls_rs_core_mls_rs"
+  },
+  "package": {
+    "mls-rs-identity-x509": {
+      "patch": "../android/patches/use-shared-license.patch",
+      "add_module_block": "../android/module_block.bp"
+    }
+  }
+}

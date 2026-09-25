@@ -1,0 +1,18 @@
+{
+  "run_cargo": false,
+  "features": [
+    "zeroize"
+  ],
+  "module_name_overrides": {
+    "external_rust_crates_chacha20_license": "external_mls_rs_chacha20_license"
+  },
+  "package": {
+    "chacha20": {
+      "license_text": [
+        "LICENSE-APACHE"
+      ],
+      "add_module_block": "../../module_block.bp",
+      "patch": "../../patches/chacha20-0.9.1.patch"
+    }
+  }
+}
