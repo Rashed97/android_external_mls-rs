@@ -1,0 +1,8 @@
+#
+# SPDX-FileCopyrightText: The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# The vendored crates are kept exactly as published, including the files the root .gitignore
+# excludes (Cargo.lock, rust-toolchain.toml), so that .cargo-checksum.json stays valid.
+!/vendor/**
