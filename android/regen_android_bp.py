@@ -31,8 +31,10 @@ each Android.bp through the symlink into the real directory. The tree is committ
 Cargo builds, such as a host build of a crate that uses mls-rs, can depend on the same crates.
 
 Crates the platform provides (see android/README.md) come from crates.io, or from --registry-dir,
-a `cargo vendor` directory, when working offline. They only need to resolve: nothing is
-generated for them, and their versions do not affect the output.
+a `cargo vendor` directory, when working offline. Nothing is generated for them. The resolution
+is pinned by android/Cargo.lock, which the script updates; --check resolves with --locked, so it
+fails if the lock would change, and does not depend on what crates.io or the local registry cache
+hold beyond the locked versions.
 
 cargo_embargo and bpfmt are taken from $ANDROID_BUILD_TOP/out/host/linux-x86/bin, or from PATH.
 With ANDROID_BUILD_TOP set, the result is also checked against the tree: no module name may be
@@ -53,6 +55,7 @@ ANDROID = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(ANDROID)
 VENDOR = os.path.join(ANDROID, "vendor")
 CARGO_TREE = os.path.join(ANDROID, "cargo")
+LOCK = os.path.join(ANDROID, "Cargo.lock")
 
 
 def package_of(crate_dir):
@@ -229,7 +232,8 @@ def main():
     ap.add_argument("--offline", action="store_true", help="do not access the network")
     ap.add_argument("--registry-dir", help="a `cargo vendor` directory to use for crates.io")
     ap.add_argument("--check", action="store_true",
-                    help="regenerate into a copy and fail if any Android.bp would change")
+                    help="regenerate into a copy and fail if any Android.bp, android/cargo or "
+                    "android/Cargo.lock would change")
     args = ap.parse_args()
 
     cargo = shutil.which("cargo")
@@ -251,14 +255,29 @@ def main():
         canonical = canonical_paths()
         root = write_root(tmp, canonical, crates)
 
+        if os.path.exists(LOCK):
+            shutil.copyfile(LOCK, os.path.join(root, "Cargo.lock"))
         cmd = [cargo, "metadata", "--format-version", "1"]
         if args.offline:
             cmd.append("--offline")
+        if args.check:
+            cmd.append("--locked")
         if args.registry_dir:
             cmd += ["--config", 'source.crates-io.replace-with="android-registry-dir"',
                     "--config", "source.android-registry-dir.directory="
                     + toml_str(os.path.abspath(args.registry_dir))]
-        meta = json.loads(subprocess.check_output(cmd, cwd=root, env=env, text=True))
+        r = subprocess.run(cmd, cwd=root, env=env, capture_output=True, text=True)
+        if r.returncode != 0:
+            sys.exit(r.stderr + "FAILED: cargo metadata"
+                     + (" (android/Cargo.lock is missing or out of date: run "
+                        "android/regen_android_bp.py)" if args.check else ""))
+        meta = json.loads(r.stdout)
+        with open(os.path.join(root, "Cargo.lock")) as f:
+            lock = f.read()
+        lock_changed = lock != (open(LOCK).read() if os.path.exists(LOCK) else None)
+        if lock_changed and not args.check:
+            with open(LOCK, "w") as f:
+                f.write(lock)
         by_manifest = {p["manifest_path"]: p for p in meta["packages"]}
 
         failed = []
@@ -301,6 +320,8 @@ def main():
         print("ANDROID_BUILD_TOP is not set: not checking against the tree", file=sys.stderr)
     for f in failed:
         print("FAILED: " + f, file=sys.stderr)
+    if lock_changed and not args.check:
+        print("android/Cargo.lock updated")
     print(f"{len(crates)} crates, {len(changed)} Android.bp changed"
           + ("".join(f"\n  {c}" for c in changed) if changed else ""))
     if failed or (args.check and changed):

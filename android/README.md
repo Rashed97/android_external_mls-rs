@@ -118,7 +118,11 @@ The others are vendored in `android/vendor/`:
 
 This needs `cargo`, and `cargo_embargo` and `bpfmt` (`m cargo_embargo bpfmt`). Crates the
 platform provides are resolved from crates.io; pass `--offline --registry-dir <dir>` to use a
-`cargo vendor` directory instead. `--check` fails if any `Android.bp` would change. With
+`cargo vendor` directory instead. `android/Cargo.lock` pins that resolution, so that a
+regeneration does not depend on what crates.io or the local registry cache holds at the time;
+the script updates it. It lies under the upstream `.gitignore`, so a new copy is added with
+`git add -f`. `--check` fails if any `Android.bp`, `android/cargo/` or `android/Cargo.lock` would
+change, resolving with `--locked`. With
 `ANDROID_BUILD_TOP` set, the result is checked against the tree: no module may be defined
 elsewhere, and every dependency must exist and be visible here.
 
