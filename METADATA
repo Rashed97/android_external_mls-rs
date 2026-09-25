@@ -1,0 +1,16 @@
+name: "mls-rs"
+description: "An implementation of Messaging Layer Security (RFC 9420)"
+third_party {
+  license_type: NOTICE
+  last_upgrade_date {
+    year: 2026
+    month: 9
+    day: 25
+  }
+  homepage: "https://github.com/awslabs/mls-rs"
+  identifier {
+    type: "Git"
+    value: "https://github.com/awslabs/mls-rs.git"
+    version: "42131c9959efb1d3928428259bc89853027f730d"
+  }
+}
